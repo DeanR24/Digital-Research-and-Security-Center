@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Safety for Kids</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        header p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0 0;
+        }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #4caf50;
+            padding-left: 1rem;
+            color: #4caf50;
+        }
+        section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .tip {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .tip h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4caf50;
+        }
+        footer {
+            background-color: #4caf50;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        footer p {
+            margin: 0;
+        }
+canvas {
+    display: none;
+    position: fixed;
+    top: 60%; /* Moves it down */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #4caf50;
+    background-color: #000;
+    box-shadow: 0 4px 20px rgba(0, 255, 0, 0.5);
+}
+
+        #snake-score {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4caf50;
+            margin-top: 1rem;
+        }
+        #start-snake-button {
+            display: none;
+            margin: 1rem auto;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: darkblue;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        #start-snake-button:hover {
+            background-color: #45a049;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 10px;
+        }
+		
+		.video-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+.video-container iframe {
+    max-width: 100%;
+    border-radius: 10px;
+}
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* Aspect ratio for 16:9 video */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const questions = [
+                {
+                    question: "What should you do if someone online asks for your personal information?",
+                    options: [
+                        "Give it to them if they seem nice",
+                        "Ignore and tell a trusted adult",
+                        "Share only your first name",
+                        "Block them but don't tell anyone"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Which is a strong password?",
+                    options: [
+                        "123456",
+                        "mypassword",
+                        "DogLover2023!",
+                        "password123"
+                    ],
+                    answer: 2
+                },
+                {
+                    question: "What should you do if you see someone being bullied online?",
+                    options: [
+                        "Join in",
+                        "Ignore it",
+                        "Report it and support the victim",
+                        "Laugh at it"
+                    ],
+                    answer: 2
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+
+            const quizContainer = document.getElementById('quiz');
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const resultElement = document.getElementById('quiz-result');
+            const snakeScoreElement = document.createElement('div');
+            snakeScoreElement.id = 'snake-score';
+            document.body.appendChild(snakeScoreElement);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 400;
+            canvas.style.display = 'none';
+            document.body.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+
+            const startButton = document.createElement('button');
+            startButton.id = 'start-snake-button';
+            startButton.textContent = 'Start Snake Game';
+            document.body.appendChild(startButton);
+
+            function loadQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionElement.textContent = currentQuestion.question;
+                optionsElement.innerHTML = '';
+
+                currentQuestion.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.addEventListener('click', () => checkAnswer(index));
+                    optionsElement.appendChild(button);
+                });
+            }
+
+            function checkAnswer(selectedIndex) {
+                const correctIndex = questions[currentQuestionIndex].answer;
+                if (selectedIndex === correctIndex) {
+                    score++;
+                }
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }
+function showResult() {
+    quizContainer.innerHTML = `<p>You answered ${score} out of ${questions.length} questions correctly!</p>`;
+
+    if (score === questions.length) {
+        quizContainer.innerHTML += '<p>Congratulations! You can now play the Game below!</p>';
+        const startButton = document.createElement('button');
+        startButton.textContent = 'Play Game';
+        startButton.style.marginTop = '1rem';
+        startButton.style.padding = '1rem 2rem';
+        startButton.style.fontSize = '1.2rem';
+        startButton.style.fontWeight = 'bold';
+        startButton.style.backgroundColor = 'darkblue';
+        startButton.style.color = '#fff';
+        startButton.style.border = 'none';
+        startButton.style.borderRadius = '8px';
+        startButton.style.cursor = 'pointer';
+        startButton.addEventListener('click', startSnakeGame);
+        quizContainer.appendChild(startButton);
+    } else {
+        const tryAgainButton = document.createElement('button');
+        tryAgainButton.textContent = 'Try Again';
+        tryAgainButton.style.marginTop = '1rem';
+        tryAgainButton.style.padding = '1rem 2rem';
+        tryAgainButton.style.fontSize = '1.2rem';
+        tryAgainButton.style.fontWeight = 'bold';
+        tryAgainButton.style.backgroundColor = '#4caf50';
+        tryAgainButton.style.color = '#fff';
+        tryAgainButton.style.border = 'none';
+        tryAgainButton.style.borderRadius = '8px';
+        tryAgainButton.style.cursor = 'pointer';
+
+        // Add event listener to reset the quiz
+        tryAgainButton.addEventListener('click', () => {
+            score = 0;
+            currentQuestionIndex = 0;
+            resetQuiz();
+        });
+
+        quizContainer.appendChild(tryAgainButton);
+    }
+}
+
+// Function to reset and reload the quiz
+function resetQuiz() {
+    quizContainer.innerHTML = `
+        <div id="quiz-question" class="quiz-question"></div>
+        <ul id="quiz-options" class="quiz-options"></ul>
+        <div id="quiz-result" class="quiz-result"></div>
+    `;
+    loadQuestion(); // Reload the quiz
+}
+
+// Function to load the current question
+function loadQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    const questionElement = document.getElementById('quiz-question');
+    const optionsElement = document.getElementById('quiz-options');
+
+    questionElement.textContent = currentQuestion.question;
+    optionsElement.innerHTML = '';
+
+    currentQuestion.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.addEventListener('click', () => checkAnswer(index));
+        optionsElement.appendChild(button);
+    });
+}
+
+// Function to check the answer and move to the next question
+function checkAnswer(selectedIndex) {
+    const correctIndex = questions[currentQuestionIndex].answer;
+    if (selectedIndex === correctIndex) {
+        score++;
+    }
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        showResult();
+    }
+}
+            function startSnakeGame() {
+                canvas.style.display = 'block';
+                snakeScoreElement.style.display = 'block';
+                startButton.style.display = 'none';
+                let snake = [{ x: 100, y: 100 }];
+                let food = { x: 200, y: 200 };
+                let direction = { x: 20, y: 0 };
+                let newDirection = { x: 20, y: 0 };
+                let gameScore = 0;
+
+                function drawSnake() {
+                    ctx.fillStyle = '#4caf50';
+                    snake.forEach(segment => {
+                        ctx.fillRect(segment.x, segment.y, 20, 20);
+                        ctx.strokeStyle = '#222';
+                        ctx.strokeRect(segment.x, segment.y, 20, 20);
+                    });
+                }
+
+                function drawFood() {
+                    ctx.fillStyle = 'red';
+                    ctx.beginPath();
+                    ctx.arc(food.x + 10, food.y + 10, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                function moveSnake() {
+                    const head = { x: snake[0].x + newDirection.x, y: snake[0].y + newDirection.y };
+
+                    if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height) {
+                        clearInterval(gameInterval);
+                        alert(`Game Over! Your final score is ${gameScore}.`);
+                        document.location.reload();
+                        return;
+                    }
+
+                    snake.unshift(head);
+
+                    if (head.x === food.x && head.y === food.y) {
+                        gameScore++;
+                        snakeScoreElement.textContent = `Score: ${gameScore}`;
+                        food = {
+                            x: Math.floor(Math.random() * (canvas.width / 20)) * 20,
+                            y: Math.floor(Math.random() * (canvas.height / 20)) * 20
+                        };
+                    } else {
+                        snake.pop();
+                    }
+                }
+
+                function checkCollision() {
+                    const head = snake[0];
+                    for (let i = 1; i < snake.length; i++) {
+                        if (head.x === snake[i].x && head.y === snake[i].y) {
+                            clearInterval(gameInterval);
+                            alert(`Game Over! Your final score is ${gameScore}.`);
+                            document.location.reload();
+                        }
+                    }
+                }
+
+                function update() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    moveSnake();
+                    drawSnake();
+                    drawFood();
+                    checkCollision();
+                }
+
+                document.addEventListener('keydown', (e) => {
+                    e.preventDefault();
+                    if (e.code === 'ArrowUp' && direction.y === 0) newDirection = { x: 0, y: -20 };
+                    if (e.code === 'ArrowDown' && direction.y === 0) newDirection = { x: 0, y: 20 };
+                    if (e.code === 'ArrowLeft' && direction.x === 0) newDirection = { x: -20, y: 0 };
+                    if (e.code === 'ArrowRight' && direction.x === 0) newDirection = { x: 20, y: 0 };
+                    direction = newDirection;
+                });
+
+                const gameInterval = setInterval(update, 100);
+            }
+
+            startButton.addEventListener('click', startSnakeGame);
+            loadQuestion();
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Internet Safety for Kids</h1>
+        <p>Learn how to stay safe while having fun online!</p>
+    </header>
+    <main>
+        <section>
+            <h2>What is Internet Safety?</h2>
+            <p>Internet safety means knowing how to protect yourself when using the internet. It’s important to stay safe so you can enjoy everything the web has to offer without running into trouble. Let’s learn some tips to be smart and safe online!</p>
+        </section>
+<section>
+    <h2>Top Internet Safety Tips</h2>
+    <div class="tips">
+        <div class="tip">
+            <h3>1. Keep Personal Info Private</h3>
+            <p>Don’t share your full name, address, phone number, or school name with people online.</p>
+        </div>
+        <div class="tip">
+            <h3>2. Use Strong Passwords</h3>
+            <p>Create passwords that are hard to guess. Use a mix of letters, numbers, and symbols.</p>
+        </div>
+        <div class="tip">
+            <h3>3. Think Before You Click</h3>
+            <p>Be careful about clicking on links or downloading files. They might be harmful to your device.</p>
+        </div>
+        <div class="tip">
+            <h3>4. Tell an Adult</h3>
+            <p>If something online makes you feel uncomfortable, tell a trusted adult right away.</p>
+        </div>
+        <div class="tip">
+            <h3>5. Be Kind Online</h3>
+            <p>Always treat others with respect and kindness, just like in real life.</p>
+        </div>
+    </div>
+    
+    <h2>Expanded Internet Safety Topics</h2>
+    <div class="expanded-tips">
+        <div class="tip">
+            <h3>1. Social Media & Online Sharing</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Social media posts are permanent—even if deleted, someone may have taken a screenshot.</li>
+                <li>Personal information (like location, school, or daily habits) can be used by stalkers or hackers.</li>
+                <li>Fake accounts and online predators target young users through DMs and comments.</li>
+                <li>Oversharing can affect future opportunities (college, jobs, scholarships).</li>
+            </ul>
+            <p><strong>How to Stay Safe & Fix Issues:</strong></p>
+            <ul>
+                <li>✅ Set profiles to private—only approved followers can see your posts.</li>
+                <li>✅ Think before posting—ask, “Would I be okay if a teacher or employer saw this?”</li>
+                <li>✅ Avoid sharing personal details (full name, address, school, vacation plans).</li>
+                <li>✅ Turn off location tracking on apps like Snapchat and Instagram.</li>
+                <li>✅ Remove unknown followers and regularly review friend lists.</li>
+                <li>✅ Use strong passwords and enable multi-factor authentication (MFA).</li>
+                <li>🚫 If you overshare personal info, delete the post immediately and adjust privacy settings.</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <h3>2. Safe Messaging & Online Friends</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Strangers may pretend to be someone they’re not to gain trust.</li>
+                <li>Cybercriminals phish for personal info through messages (e.g., “What’s your pet’s name?”).</li>
+                <li>Scammers and predators manipulate young users into sharing private information or photos.</li>
+                <li>Some conversations can turn toxic or manipulative over time.</li>
+            </ul>
+            <p><strong>How to Stay Safe & Fix Issues:</strong></p>
+            <ul>
+                <li>✅ Only message people you know in real life—avoid random DMs.</li>
+                <li>✅ Never share personal info or send pictures to someone you just met online.</li>
+                <li>✅ Block and report anyone who makes you uncomfortable.</li>
+                <li>✅ Be skeptical of “too good to be true” offers—scammers trick users with giveaways or fake opportunities.</li>
+                <li>✅ Set chat restrictions in apps/games to limit contact with strangers.</li>
+                <li>🚫 If you receive inappropriate messages, screenshot them, report the sender, and tell a trusted adult.</li>
+            </ul>
+        </div>
+
+        <div class="tip">
+            <h3>3. Gaming & Online Platforms</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Online gaming communities can expose users to predators or cyberbullies.</li>
+                <li>In-game scams (like “free skins” or “hacks”) often contain viruses or phishing attempts.</li>
+                <li>Some players target younger users for harassment or online grooming.</li>
+                <li>Gaming addiction can impact mental health, sleep, and productivity.</li>
+            </ul>
+            <p><strong>How to Stay Safe & Fix Issues:</strong></p>
+            <ul>
+                <li>✅ Use a unique username—avoid using real names or birth years.</li>
+                <li>✅ Mute/block toxic players—don’t engage with cyberbullies.</li>
+                <li>✅ Turn off chat with strangers or limit communication to real-life friends.</li>
+                <li>✅ Be cautious of in-game purchases—some games trick users into spending money.</li>
+                <li>✅ Enable parental controls if needed to restrict who can message or add friends.</li>
+                <li>🚫 If scammed or harassed, report the player through the game’s system and secure your account.</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <h3>4. Digital Footprint & Privacy</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Everything you do online leaves a trace—future employers and colleges may check it.</li>
+                <li>Hackers can gather personal info from old, inactive accounts.</li>
+                <li>AI-generated deepfakes and identity theft can be used against you.</li>
+                <li>Oversharing opinions or personal details can come back to haunt you years later.</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <h3>5. Parental Controls & Monitoring (For Younger Users)</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Younger users may accidentally access inappropriate or harmful content.</li>
+                <li>Predators target kids through social media, gaming, and messaging apps.</li>
+                <li>Without limits, excessive screen time can interfere with school and mental health.</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <h3>6. Screen Time & Mental Health</h3>
+            <p><strong>Why Be Aware:</strong></p>
+            <ul>
+                <li>Excessive screen time can lead to sleep problems, anxiety, and depression.</li>
+                <li>Social media creates unrealistic expectations that can harm self-esteem.</li>
+                <li>Doomscrolling and excessive news exposure can increase stress and anxiety.</li>
+            </ul>
+        </div>
+		<div class="tip">
+    <h3>Safe and Kid-Friendly Platforms for Media, Learning, and Browsing</h3>
+    <p>Ensuring a secure and educational online experience for children is crucial. Here are some trusted platforms that provide age-appropriate content with strong parental controls:</p>
+    
+    <h4>🎥 Safe Video Streaming Platforms</h4>
+    <ul>
+        <li>✅ <a href="https://www.youtubekids.com/" target="_blank">YouTube Kids</a> – A safer version of YouTube with family-friendly videos and parental controls.</li>
+        <li>✅ <a href="https://www.netflix.com/kids" target="_blank">Netflix Kids</a> – A dedicated section with age-appropriate movies and shows.</li>
+        <li>✅ <a href="https://www.disneyplus.com/kids-profile" target="_blank">Disney+ Kids</a> – A curated kids' mode featuring family-friendly Disney, Pixar, and Marvel content.</li>
+        <li>✅ <a href="https://www.apple.com/apple-tv-plus/" target="_blank">Apple TV+ Kids</a> – Exclusive kids' shows with high-quality educational and entertaining content.</li>
+    </ul>
+
+    <h4>📚 Educational and Learning Platforms</h4>
+    <ul>
+        <li>✅ <a href="https://pbskids.org/" target="_blank">PBS Kids</a> – Interactive games, videos, and educational activities for young learners.</li>
+        <li>✅ <a href="https://kids.nationalgeographic.com/" target="_blank">National Geographic Kids</a> – Engaging content about nature, science, and the world.</li>
+        <li>✅ <a href="https://www.sesamestreet.org/" target="_blank">Sesame Street</a> – Fun educational resources featuring classic Sesame Street characters.</li>
+        <li>✅ <a href="https://www.starfall.com/" target="_blank">Starfall</a> – A reading and literacy-focused platform for young children.</li>
+    </ul>
+
+    <h4>🔍 Safe Browsing and Digital Well-Being</h4>
+<ul>
+    <li>✅ <a href="https://www.commonsensemedia.org/" target="_blank">Common Sense Media</a> – Reviews and guides to help parents choose age-appropriate media.</li>
+    <li>✅ <a href="https://www.kiddle.co/" target="_blank">Kiddle</a> – A safe, kid-friendly search engine powered by Google.</li>
+    <li>✅ <a href="https://www.kidrex.org/" target="_blank">KidRex</a> – A secure search engine designed specifically for children.</li>
+    <li>✅ <a href="https://www.netsmartzkids.org/" target="_blank">NetSmartz Kids</a> – An educational platform for online safety awareness.</li>
+    <li>✅ <a href="https://beinternetawesome.withgoogle.com/" target="_blank">Be Internet Awesome (Google)</a> – Teaches kids about online safety through interactive games.</li>
+    <li>✅ <a href="https://www.internetmatters.org/" target="_blank">Internet Matters</a> – Parental guides and tools for managing children’s online safety.</li>
+    <li>✅ <a href="https://www.cyberwise.org/" target="_blank">CyberWise</a> – A digital safety resource for parents and educators.</li>
+    <li>✅ <a href="https://www.safesearchkids.com/" target="_blank">Safe Search Kids</a> – A secure search tool designed to filter out explicit content.</li>
+</ul>
+
+
+    <h4>🚨 Online Safety Tips for Parents</h4>
+    <ul>
+        <li>🔹 Enable parental controls on streaming and gaming platforms.</li>
+        <li>🔹 Use kid-friendly browsers and safe search tools.</li>
+        <li>🔹 Monitor screen time and encourage a balanced digital lifestyle.</li>
+        <li>🔹 Discuss online safety, privacy, and responsible internet usage with your child.</li>
+    </ul>
+
+    <p>🚫 <strong>Avoid</strong> unknown or unmoderated websites that lack security measures and content controls.</p>
+</div>
+
+    </div>
+</section>
+
+        <section>
+            <h2>Play Our Internet Safety Quiz!</h2>
+            <div class="game-container">
+                <div id="quiz" class="quiz">
+                    <div id="quiz-question" class="quiz-question"></div>
+                    <ul id="quiz-options" class="quiz-options"></ul>
+                    <div id="quiz-result" class="quiz-result"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Learn to Code</h2>
+            <div id="options">
+                <button onclick="showHelloWorldInstructions()">1. Hello World</button>
+                <button onclick="showDesignInstructions()">2. Design/Image</button>
+                <button onclick="showAnimationInstructions()">3. Make it Cool</button>
+            </div>
+
+            <div id="instruction"></div>
+
+            <div id="codeContainer">
+                <div id="editor">
+                    <textarea id="code" placeholder="Type your code here..."></textarea>
+                    <button onclick="runCode()" style="margin-top: 10px;">Run Code</button>
+                </div>
+                <div id="display"></div>
+            </div>
+
+            <script>
+                const codeBox = document.getElementById("code");
+                const displayBox = document.getElementById("display");
+                const instructionBox = document.getElementById("instruction");
+
+                function showHelloWorldInstructions() {
+                    instructionBox.innerHTML = `Type the following code to display a colored message:<br>
+<code>&lt;h1 style=&quot;color: red;&quot;&gt;Hello World! My name is [Your Name]&lt;/h1&gt;</code>`;
+                    codeBox.value = "";
+                }
+
+                function showDesignInstructions() {
+                    instructionBox.innerHTML = `Type the following code to create a gradient design:<br>
+<code>&lt;div style=&quot;width: 100px; height: 100px; background: linear-gradient(to bottom right, blue, pink);&quot;&gt;&lt;/div&gt;</code>`;
+                    codeBox.value = "";
+                }
+
+                function showAnimationInstructions() {
+                    instructionBox.innerHTML = `Type the following code to create a moving box animation:<br>
+<code>&lt;div style=&quot;width: 50px; height: 50px; background-color: orange; position: relative; animation: move 2s infinite alternate;&quot;&gt;&lt;/div&gt;
+&lt;style&gt;
+    @keyframes move {
+        from { left: 0; }
+        to { left: 200px; }
+    }
+&lt;/style&gt;</code>`;
+                    codeBox.value = "";
+                }
+
+                function runCode() {
+                    const code = codeBox.value;
+                    displayBox.innerHTML = code;
+                }
+
+            </script>
+        </section>
+<section>
+    <h2>Watch an Educational Video</h2>
+    <p>Learn more about internet safety by watching this video.</p>
+    <div class="video-container">
+        <video width="800" height="450" controls>
+            <source src="My Movie 25.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</section>
+
+
+    </main>
+    <footer>
+        <p>&copy; 2025 Digital Research and Security Center. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+ <!--   
+   +
+   |
++--+--+     I hope you enjoyed the code. This project is dedicated to many of the amazing people in the Upper peninsula of Michigan. As always God, family, and peace
+   |
+   +
+   -->
+
+

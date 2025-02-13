@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect Yourself from Cyber Threats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #2e3440;
+            color: #d8dee9;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #3b4252;
+            color: #eceff4;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #81a1c1;
+            padding-left: 1rem;
+            color: #81a1c1;
+        }
+        section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 0.8rem;
+        }
+        ul li a {
+            color: #88c0d0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        ul li a:hover {
+            color: #5e81ac;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .card {
+            background-color: #4c566a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #88c0d0;
+        }
+        .card p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .card label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #d8dee9;
+        }
+        .card input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        .score-section {
+            background-color: #3b4252;
+            color: #eceff4;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .score-section button {
+            background-color: #81a1c1;
+            color: #eceff4;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .score-section button:hover {
+            background-color: #5e81ac;
+        }
+        footer {
+            background-color: #3b4252;
+            color: #eceff4;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Protect Yourself from Cyber Threats</h1>
+        <p>Simple, actionable steps to stay safe in the digital world</p>
+    </header>
+    <main>
+        <section>
+            <h2>Understanding the Importance of Cybersecurity</h2>
+            <p>In today's connected world, protecting your digital identity and data is critical. Cybercriminals are constantly finding new ways to exploit weaknesses, making it essential for everyone to adopt strong security practices. From phishing scams to data breaches, understanding the risks is the first step toward securing your online presence.</p>
+        </section>
+        <section>
+            <h2>Essential Cybersecurity Tips</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. Create Strong Passwords</h3>
+                    <p>Use unique, complex passwords for each account. A mix of uppercase, lowercase, numbers, and special characters can make your passwords hard to crack. Consider using a password manager to keep track of them.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>2. Enable Two-Factor Authentication</h3>
+                    <p>Two-factor authentication (2FA) adds an extra layer of security. It requires a second step, like a code sent to your phone or email, making it harder for hackers to gain access.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>3. Avoid Phishing Scams</h3>
+                    <p>Be cautious of unsolicited emails or messages asking for personal information. Always verify the sender and avoid clicking on suspicious links.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>4. Update Software Regularly</h3>
+                    <p>Keep your operating system, apps, and antivirus software up-to-date. Updates often include patches for security vulnerabilities.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>5. Use Secure Connections</h3>
+                    <p>When browsing online, ensure the website uses HTTPS. Avoid using public Wi-Fi for sensitive tasks unless you're connected to a Virtual Private Network (VPN).</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>6. Back Up Your Data</h3>
+                    <p>Regularly back up your important files to an external hard drive or cloud storage. This protects you from data loss due to ransomware or hardware failure.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>7. Avoid Oversharing on Social Media</h3>
+                    <p>Think twice before sharing personal information on social platforms. Cybercriminals can use this data for phishing or identity theft.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>8. Monitor Your Accounts</h3>
+                    <p>Regularly check your bank and online accounts for unauthorized transactions or activities. Set up alerts for unusual account activity.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>9. Use Antivirus Software</h3>
+                    <p>Install reliable antivirus software and ensure it is updated regularly. This helps protect your devices from malware and other threats.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>10. Review App Permissions</h3>
+                    <p>Check the permissions of installed apps and only allow access to necessary data. Avoid granting excessive permissions to apps.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>11. Avoid Malicious or Suspicious Websites</h3>
+                    <p>Use a trusted browser extension or built-in browser feature to block access to known malicious sites. Be cautious of downloading files from unknown sources.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>12. Set Up a Guest Network</h3>
+                    <p>Use a separate guest network for visitors in your home to keep your main network more secure. This isolates devices and limits potential vulnerabilities.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>13. Lock Your Social Security Number</h3>
+                    <p>Consider freezing your credit with major bureaus to protect against identity theft. This prevents unauthorized access to your credit file.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>14. Maintain and Replace Your Router</h3>
+                    <p>Ensure your router firmware is updated regularly. Replace routers every 4-5 years to keep up with security standards and better performance.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>15. Use a Burner Email for Sign-Ups and Online Accounts</h3>
+                    <p>Create a separate email address just for signing up for online services, newsletters, and accounts that aren’t critical. This helps keep your primary email safe from spam, phishing attempts, and potential data breaches while minimizing your overall attack surface.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>16. Use a Password-Protected Screen Lock</h3>
+                    <p>Always set a strong password, PIN, or biometric lock (e.g., fingerprint or face recognition) on your devices to prevent unauthorized access.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>17. Shred Sensitive Documents</h3>
+                    <p>Physically destroy old documents containing personal or financial information to prevent dumpster divers from stealing your data.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>18. Be Cautious with Public Charging Stations</h3>
+                    <p>Avoid using public charging stations, as they can be compromised (a technique called "juice jacking"). Use a portable power bank instead.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>19. Check for Data Breaches</h3>
+                    <p>Regularly check if your accounts have been compromised in data breaches using tools like "Have I Been Pwned" and take action immediately if they have.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+                <div class="card">
+                    <h3>20. Educate Yourself and Your Family</h3>
+                    <p>Stay informed about common scams and teach your family members, especially children and seniors, about online safety and phishing techniques.</p>
+                    <label><input type="checkbox"> Mark as Completed</label>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Recommended Tools to Stay Safe</h2>
+            <p>Using the right tools can significantly enhance your cybersecurity. Here are some highly recommended tools:</p>
+            <ul>
+                <li><strong>Password Managers:</strong> <a href="https://www.lastpass.com" target="_blank">LastPass</a>, <a href="https://1password.com" target="_blank">1Password</a>, or <a href="https://www.dashlane.com" target="_blank">Dashlane</a>. Our personal free favorite is  <a href="https://bitwarden.com/products/personal/" target="_blank">Bitwarden</a></li>
+                <li><strong>Antivirus Software:</strong> <a href="https://us.norton.com" target="_blank">Norton</a>, <a href="https://www.bitdefender.com" target="_blank">Bitdefender</a>, or <a href="https://www.mcafee.com" target="_blank">McAfee</a>.</li>
+                <li><strong>VPN Services:</strong> <a href="https://nordvpn.com" target="_blank">NordVPN</a>, <a href="https://www.expressvpn.com" target="_blank">ExpressVPN</a>, or <a href="https://www.cyberghostvpn.com" target="_blank">CyberGhost</a>.</li>
+                <li><strong>Browser Extensions:</strong> <a href="https://www.eff.org/https-everywhere" target="_blank">HTTPS Everywhere</a>, <a href="https://ublockorigin.com" target="_blank">uBlock Origin</a>, or <a href="https://privacybadger.org" target="_blank">Privacy Badger</a>.</li>
+                <li><strong>Data Breach Monitoring:</strong> <a href="https://haveibeenpwned.com" target="_blank">Have I Been Pwned</a> - Free and easy to use, just enter your email to see if your email was in a data breach.</li>
+				<li><strong>Secure Web Browsers:</strong> <li><a href="https://brave.com/download/" target="_blank">Brave</a> - A privacy-focused browser with built-in tracker blocking, Tor mode, and strong security features.</li>
+				<li><a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Mozilla Firefox</a> - An open-source browser with enhanced tracking protection, strong security settings, and extensive customization options.</li></li>
+            </ul>
+        </section>
+        <section class="score-section">
+            <h2>Check Your Personal Cybersecurity Score</h2>
+            <p>Click the button below to calculate your score based on the completed tasks.</p>
+            <button onclick="calculateScore()">Calculate Score</button>
+            <p id="score-display" style="margin-top: 1rem; font-size: 1.2rem;"></p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Digital Research and Security Center. All rights reserved.</p>
+    </footer>
+    <script>
+        function calculateScore() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const total = checkboxes.length;
+            let completed = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    completed++;
+                }
+            });
+
+            const score = Math.round((completed / total) * 100);
+            document.getElementById('score-display').textContent = `Your Cybersecurity Score: ${score}%`;
+        }
+    </script>
+</body>
+</html>
+   <!-- I hope you enjoyed the code. This project is dedicated to many of the amazing people in the Upper peninsula of Michigan. As always God, family, and peace -->

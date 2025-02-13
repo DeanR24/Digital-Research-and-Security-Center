@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Research and Security Center</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #1E1E1E;
+            --background-color: #121212;
+            --text-color: #ffffff;
+            --accent-color: #00C9A7;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+        body.light-mode {
+            --background-color: #f5f5f5;
+            --text-color: #2c2c2c;
+            --primary-color: #4285f4;
+            --secondary-color: #ffffff;
+            --accent-color: #34a853;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            background-color: var(--secondary-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        nav .theme-toggle {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background-color: transparent;
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            border: none;
+        }
+        nav .theme-toggle:hover {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+        }
+        main {
+            flex: 1;
+        }
+        section {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .age-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .card-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .card-content p {
+            margin: 0.5rem 0;
+        }
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            color: #2c2c2c;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .fullscreen-btn:hover {
+            transform: scale(1.1);
+        }
+        .exit-fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            display: none;
+            z-index: 1001;
+            transition: transform 0.2s;
+        }
+        .exit-fullscreen-btn:hover {
+            transform: scale(1.1);
+        }
+		
+/* Mobile-specific adjustments!!! */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        background-color: #f0f0f0;
+        color: #000;
+    }
+    header {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: #fff;
+    }
+    header h1 {
+        font-size: 2rem;
+    }
+    nav {
+        flex-direction: column;
+    }
+    nav a, .theme-toggle {
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
+    .age-group {
+        display: block;
+    }
+    .card {
+        margin: 1rem 0;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background-color: #fff;
+        color: #000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    footer {
+        padding: 1.5rem;
+        text-align: center;
+        background-color: #222;
+        color: #fff;
+    }
+    .modal-content {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
+</style>
+
+		
+    </style>
+    <script>
+        let currentModal = null;
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function showModal(modalId) {
+            closeModal(currentModal); // Close any open modal
+            currentModal = modalId;
+            const modal = document.querySelector(`#${modalId}`);
+            modal.classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            if (modalId) {
+                const modal = document.querySelector(`#${modalId}`);
+                modal.classList.remove('active');
+                currentModal = null;
+            }
+        }
+
+        function toggleModalFullscreen(modalId) {
+            const modalContent = document.querySelector(`#${modalId} .modal-content`);
+            const fullscreenBtn = modalContent.querySelector('.fullscreen-btn');
+            const exitFullscreenBtn = modalContent.querySelector('.exit-fullscreen-btn');
+
+            if (modalContent.style.width === '100%' && modalContent.style.height === '100%') {
+                modalContent.style.width = '';
+                modalContent.style.height = '';
+                modalContent.style.maxWidth = '600px';
+                modalContent.style.maxHeight = '90%';
+                fullscreenBtn.style.display = 'block';
+                exitFullscreenBtn.style.display = 'none';
+            } else {
+                modalContent.style.width = '100%';
+                modalContent.style.height = '100%';
+                modalContent.style.maxWidth = 'none';
+                modalContent.style.maxHeight = 'none';
+                fullscreenBtn.style.display = 'none';
+                exitFullscreenBtn.style.display = 'block';
+            }
+        }
+
+        function toggleTextareaFullscreen(textareaId) {
+            const textarea = document.getElementById(textareaId);
+            const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+
+            if (textarea.style.position === 'fixed') {
+                textarea.style.position = '';
+                textarea.style.width = '';
+                textarea.style.height = '';
+                textarea.style.top = '';
+                textarea.style.left = '';
+                textarea.style.zIndex = '';
+                exitFullscreenBtn.style.display = 'none';
+            } else {
+                textarea.style.position = 'fixed';
+                textarea.style.width = '100vw';
+                textarea.style.height = '100vh';
+                textarea.style.top = '0';
+                textarea.style.left = '0';
+                textarea.style.zIndex = '1000';
+                exitFullscreenBtn.style.display = 'block';
+            }
+        }
+
+        function exitTextareaFullscreen(textareaId) {
+            const textarea = document.getElementById(textareaId);
+            const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+
+            textarea.style.position = '';
+            textarea.style.width = '';
+            textarea.style.height = '';
+            textarea.style.top = '';
+            textarea.style.left = '';
+            textarea.style.zIndex = '';
+            exitFullscreenBtn.style.display = 'none';
+        }
+
+        function submitResearch(event) {
+            event.preventDefault();
+            const researchContent = document.getElementById('researchContent').value;
+            const researchTitle = document.getElementById('researchTitle').value;
+            const researcherName = document.getElementById('researcherName').value;
+            const mailtoLink = `mailto:deanramsbottom3@gmail.com?subject=${encodeURIComponent(researchTitle)}&body=${encodeURIComponent("Researcher Name: " + researcherName + "\n\n" + researchContent)}`;
+            window.location.href = mailtoLink;
+        }
+
+        function submitContactForm(event) {
+            event.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            const mailtoLink = `mailto:deanramsbottom3@gmail.com?subject=Contact Form Submission&body=${encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message)}`;
+            window.location.href = mailtoLink;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Digital Research and Security Center</h1>
+        <p>Empowering individuals across all generations with the knowledge and tools to navigate the digital landscape securely and effectively.</p>
+    </header>
+    <nav>
+        <a href="#protect-yourself" onclick="showModal('protectYourselfModal'); event.preventDefault();">Research and Analysis</a>
+        <a href="#about" onclick="showModal('aboutModal'); event.preventDefault();">About Us</a>
+        <a href="#purpose" onclick="showModal('purposeModal'); event.preventDefault();">Purpose and Mission</a>
+        <a href="#contact-us" onclick="showModal('contactUsModal'); event.preventDefault();">Contact Us</a>
+<a href="#" onclick="openSecurityChecklist()" class="button">Quick Security Checklist</a>
+
+<script>
+    function openSecurityChecklist() {
+        window.open("file:///C:/Users/deanr/Desktop/NonProfit%20Organization%20CODE/Quck%20Security%20Checklist.html", "_blank");
+    }
+</script>
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Welcome to Digital Research and Security Center</h2>
+            <p>The Digital Research and Security Center is your resource for learning and enhancing your digital skills, tailored to meet the needs of every user.</p>
+            <div class="age-group">
+<div class="card" id="protect-yourself" onclick="openProtectYourself()">
+    <div class="card-content">
+        <h3>How to Protect Yourself</h3>
+        <p>Learn essential safety tips and strategies to protect yourself online. This page includes Essential Cybersecurity Tips, Recommended Tools to Stay Safe, and Checking Your Personal Cybersecurity Score</p>
+    </div>
+</div>
+
+<script>
+    function openProtectYourself() {
+        window.open("file:///C:/Users/deanr/Desktop/NonProfit%20Organization%20CODE/How_To_Protect_Yourself.html", "_blank");
+    }
+</script>
+
+<div class="card" id="youth-resources" onclick="openYouthResources()">
+    <div class="card-content">
+        <h3>Youth Resources</h3>
+        <p>Explore essential cybersecurity tips and best practices designed to help youth protect their digital presence, safeguard personal information, and navigate the online world securely. The page includes Top Internet Safety Tips, Internet Safety Quiz, and a Educational Video. 
+</p>
+    </div>
+</div>
+
+<script>
+    function openYouthResources() {
+        window.open("file:///C:/Users/deanr/Desktop/NonProfit%20Organization%20CODE/YouthSecurityInformation.html");
+    }
+</script>
+
+
+                <div class="card" id="purpose">
+                    <div class="card-content" onclick="showModal('cyberThreatsModal')">
+                        <h3>Current Cybersecurity Threats</h3>
+                        <p>Current cybersecurity threats affecting individuals, along with the latest solutions for mitigation and protection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Digital Research and Security Center. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <h3>About Us</h3>
+<p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+        The <strong>Digital Research and Security Center (DRSC)</strong> is a team of cybersecurity professionals 
+        dedicated to making the digital world safer for everyone. Our passion for cybersecurity, research, and 
+        education drives us to empower individuals with the knowledge and tools needed to stay protected online.
+    </p>
+    
+    <p style="font-size: 1.1rem; max-width: 800px; margin: 1.5rem auto; line-height: 1.6;">
+        We believe that **cybersecurity is for everyone**—from students and parents to businesses and seniors.  
+        In an era of evolving digital threats, we are committed to providing **reliable cybersecurity research,  
+        practical safety tips, and hands-on learning resources** to help people navigate the internet securely.
+    </p>
+
+    <ul style="list-style: none; padding: 0; max-width: 800px; margin: 0 auto; font-size: 1.1rem;">
+        <li>🔹 <strong>Cybersecurity Experts:</strong> Our team consists of passionate professionals working in the field.</li>
+        <li>🔹 <strong>Community Focused:</strong> We engage with individuals and organizations to promote digital safety.</li>
+        <li>🔹 <strong>Research Driven:</strong> We analyze and share the latest cybersecurity threats and solutions.</li>
+        <li>🔹 <strong>Education & Awareness:</strong> We make cybersecurity knowledge accessible to all.</li>
+    </ul>
+
+    <p style="font-size: 1.2rem; max-width: 800px; margin: 2rem auto; line-height: 1.6;">
+        Our mission is simple: **Protect, Educate, and Empower**. We are here to help individuals stay one step ahead of cyber threats 
+        and build a safer, more informed digital world.
+    </p>
+
+    <p style="font-size: 1.2rem; font-weight: bold; color: var(--accent-color);">
+        Together, we can create a future where security, privacy, and knowledge thrive.
+    </p>            <button class="close-btn" onclick="closeModal('aboutModal')">&times;</button>
+        </div>
+    </div>
+    <div id="purposeModal" class="modal">
+        <div class="modal-content">
+            <h3>Our Purpose and Mission</h3>
+    <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+        At the <strong>Digital Research and Security Center (DRSC)</strong>, our mission is to empower individuals of all ages 
+        with the <strong>knowledge, tools, and resources</strong> needed to navigate the digital world safely and effectively.
+    </p>
+    <p style="font-size: 1.1rem; max-width: 800px; margin: 1.5rem auto; line-height: 1.6;">
+        We believe that <strong>cybersecurity awareness and digital literacy</strong> are essential in today’s interconnected world. 
+        Our center is committed to:
+    </p>
+    <ul style="list-style: none; padding: 0; max-width: 800px; margin: 0 auto; font-size: 1.1rem;">
+        <li>🔹 <strong>Educating</strong> the public on cybersecurity threats and best practices.</li>
+        <li>🔹 <strong>Providing accessible research</strong> to help individuals make informed digital decisions.</li>
+        <li>🔹 <strong>Fostering a secure online environment</strong> by equipping users with cybersecurity skills.</li>
+        <li>🔹 <strong>Engaging with communities</strong> to promote responsible and ethical technology use.</li>
+    </ul>
+    <p style="font-size: 1.2rem; max-width: 800px; margin: 2rem auto; line-height: 1.6;">
+        Our vision is to create a <strong>digitally resilient society</strong> where everyone, from young learners to seniors, 
+        has the confidence to explore, work, and connect online safely.
+    </p>
+    <p style="font-size: 1.2rem; font-weight: bold; color: var(--accent-color);">
+        We want to ensure that technology remains a tool for empowerment rather than a source of vulnerability.<br>
+		<p> Together, we build a safer digital future.<p>
+    </p>
+            <button class="close-btn" onclick="closeModal('purposeModal')">&times;</button>
+        </div>
+    </div>
+    <div id="protectYourselfModal" class="modal">
+        <div class="modal-content">
+            <h3>Cybersecurity Research and Analysis</h3>
+			<a href="https://example.com" target="_blank" style="text-decoration: none; color: inherit;">
+			<u>- Assessing the Odds of the Average Person Getting Hacked</u>
+			</a>
+			<a href="https://example.com" target="_blank" style="text-decoration: none; color: inherit;">
+			<u><br>- The Hidden Dangers of Free VPNs Weighing the Risks and Rewards</u>
+			</a>
+            <button class="close-btn" onclick="closeModal('protectYourselfModal')">&times;</button>
+        </div>
+    </div>
+    <div id="cyberThreatsModal" class="modal">
+        <div class="modal-content">
+            <h3>Current Cybersecurity Threats</h3>
+			<p>Stay informed about the latest cybersecurity threats.<br>
+			🔒 Your best defense is awareness! (February 2025)</p>
+            <ul style="text-align: left;">
+<ul>
+    <li><h3>📧 Scam Emails & Texts (Phishing)</h3>
+        <p>Hackers send fake messages posing as banks, companies, or family to steal personal information.</p>
+        <ul>
+            <li><strong>Think before you click:</strong> Avoid unknown links or attachments.</li>
+            <li><strong>Verify first:</strong> Contact the company directly if something seems suspicious.</li>
+        </ul>
+    </li>
+
+    <li><h3>🎭 AI Deepfake Scams</h3>
+        <p>Criminals use fake voices or videos to impersonate loved ones or officials for fraud.</p>
+        <ul>
+            <li><strong>Double-check requests:</strong> If a "relative" asks for money, confirm with a phone call.</li>
+            <li><strong>Trust your instincts:</strong> If something feels off, it probably is.</li>
+        </ul>
+    </li>
+
+    <li><h3>🔒 Ransomware (Data Lockouts)</h3>
+        <p>Hackers lock files and demand payment to restore access, often causing data loss.</p>
+        <ul>
+            <li><strong>Back up important files:</strong> Use cloud storage or an external drive.</li>
+            <li><strong>Keep devices updated:</strong> Install security updates promptly.</li>
+        </ul>
+    </li>
+
+    <li><h3>📡 Hacked Smart Devices (IoT Attacks)</h3>
+        <p>Weak passwords on smart home devices (cameras, TVs, thermostats) make them easy targets.</p>
+        <ul>
+            <li><strong>Change default passwords:</strong> Use strong, unique passwords for all devices.</li>
+            <li><strong>Update regularly:</strong> Keep firmware and apps updated.</li>
+        </ul>
+    </li>
+
+    <li><h3>📱 Phone & Social Media Scams</h3>
+        <p>Criminals trick people into revealing personal info or money through fake calls or social media posts.</p>
+        <ul>
+            <li><strong>Never share personal info over the phone:</strong> Only provide details if you initiated the call.</li>
+            <li><strong>Be cautious online:</strong> Watch out for fake giveaways or urgent social media messages.</li>
+        </ul>
+    </li>
+</ul>
+
+            <button class="close-btn" onclick="closeModal('cyberThreatsModal')">&times;</button>
+        </div>
+    </div>
+   <!-- Contact Us Modal -->
+<div id="contactUsModal" class="modal">
+    <div class="modal-content">
+        <h3>Contact Us</h3>
+        <p>We'd love to hear from you! Fill out the form below to get in touch:</p>
+
+        <form onsubmit="submitContactForm(event)">
+            <label for="contactName">Your Name:</label>
+            <input type="text" id="contactName" placeholder="Enter your name" required 
+                style="width: 100%; margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+            
+            <label for="contactEmail">Your Email:</label>
+            <input type="email" id="contactEmail" placeholder="Enter your email" required
+                style="width: 100%; margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+            
+            <label for="contactSubject">Subject:</label>
+            <input type="text" id="contactSubject" placeholder="Enter the subject" required
+                style="width: 100%; margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+            
+            <label for="contactMessage">Your Message:</label>
+            <textarea id="contactMessage" rows="5" placeholder="Enter your message" required
+                style="width: 100%; margin-bottom: 1rem; padding: 1rem; border-radius: 8px; border: 1px solid var(--primary-color);"></textarea>
+
+            <button type="submit" style="margin-top: 1rem; padding: 0.5rem 1rem; background-color: var(--primary-color); color: #ffffff; border: none; border-radius: 8px; cursor: pointer;">
+                Send
+            </button>
+        </form>
+
+        <button class="close-btn" onclick="closeModal('contactUsModal')">&times;</button>
+    </div>
+</div>
+
+<script>
+    function submitContactForm(event) {
+        event.preventDefault(); // Prevents form from submitting normally
+
+        // Get values from the form fields
+        const name = document.getElementById('contactName').value;
+        const email = document.getElementById('contactEmail').value;
+        const subject = document.getElementById('contactSubject').value;
+        const message = document.getElementById('contactMessage').value;
+
+        // Create a mailto link
+        const mailtoLink = `mailto:your-email@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message)}`;
+
+        // Open the mail client
+        window.location.href = mailtoLink;
+    }
+</script>
+
+</body>
+</html>
+
+
+   <!-- I hope you enjoyed the code. This project is dedicated to many of the amazing people in the Upper peninsula of Michigan. As always God, Country, Family, and Peace -->
